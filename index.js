@@ -23,8 +23,16 @@ const io = new Server(server, {
 // listen to the socket connection
 io.on('connection', (socket) => {
     console.log(`User connected on host:${socket.id}`);
-    socket.on('message', (data) => {
-        socket.broadcast.emit('received_message', data);
+    socket.on('join_room', (data) => {
+        console.log(data.room);
+        socket.join(data.room);
+        const roomSize = io.sockets.adapter.rooms.get(data.room)?.size || 0;
+        console.log(`Users in room ${data.room}: ${roomSize}`);
+
+    })
+    socket.on('sent_message', (data) => {
+        socket.to(data.room).emit('received_message', data);
+        console.log(data)
     })
 })
 

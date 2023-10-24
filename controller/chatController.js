@@ -55,6 +55,18 @@ const addMessage = AsyncHandler(async(req,res)=>{
 })
 
 
+const getMessage = AsyncHandler(async() => {
+    const findChat = await Chat.findOne({
+        users: { $all: [receiver_id, sender_id] }
+    });
+    if (!findChat) {
+        throw new Error('Not found!!!');
+    } else {
+        res.send(findChat);
+    }
+})
+
+
 module.exports = {
-    addChat,addMessage
+    addChat,addMessage,getMessage
 }
